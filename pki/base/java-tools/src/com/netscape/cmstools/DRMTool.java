@@ -939,6 +939,13 @@ public class DRMTool
                                           + DRMTOOL_CFG_KEYRECOVERY
                                           + DOT
                                           + "extdata.requestId";
+    
+    private static final String
+    DRMTOOL_CFG_KEYRECOVERY_CN = DRMTOOL_CFG_PREFIX
+                          + DOT
+                          + DRMTOOL_CFG_KEYRECOVERY
+                          + DOT
+                          + "cn";
 
 
     // Constants:  Target Certificate Information
@@ -2454,8 +2461,14 @@ public class DRMTool
                 output = line;
             }
         } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("cn: Key Recovery");
+        	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_CN ) ) {
+        		output = compose_numeric_line( DRM_LDIF_CN,
+        				                       SPACE,
+        				                       line,
+        				                       false );
+        	} else {
+        		output = line;
+        	}
         } else if( record_type.equals( DRM_LDIF_RECORD ) ) {
             // Non-Request / Non-Key Record:
             //     Pass through the original
@@ -4609,7 +4622,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) 
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY)
-                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID) ) {
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID)
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_CN) ) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

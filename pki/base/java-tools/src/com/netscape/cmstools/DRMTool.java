@@ -3517,8 +3517,166 @@ public class DRMTool
                 output = line;
             }
         } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("extdata-requestnotes: Key Recovery");
+        	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_NOTES ) ) {
+                // write out a revised 'extdata-requestnotes' line
+                if( mRewrapFlag && mAppendIdOffsetFlag ) {
+                    data = input
+                         + SPACE
+                         + LEFT_BRACE
+                         + mDateOfModify
+                         + RIGHT_BRACE
+                         + COLON + SPACE
+                         + DRM_LDIF_REWRAP_MESSAGE
+                         + mPublicKeySize
+                         + DRM_LDIF_RSA_MESSAGE
+                         + mSourcePKISecurityDatabasePwdfileMessage
+                         + SPACE
+                         + PLUS + SPACE
+                         + DRM_LDIF_APPENDED_ID_OFFSET_MESSAGE
+                         + SPACE
+                         + TIC
+                         + mAppendIdOffset.toString()
+                         + TIC
+                         + mDrmNamingContextMessage
+                         + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                    // Unformat the data
+                    unformatted_data = stripEOL( data );
+
+                    // Format the unformatted_data
+                    // to match the desired LDIF format
+                    output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                           + SPACE
+                           + format_ldif_data(
+                                 EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                 unformatted_data );
+                } else if( mRewrapFlag && mRemoveIdOffsetFlag ) {
+                    data = input
+                         + SPACE
+                         + LEFT_BRACE
+                         + mDateOfModify
+                         + RIGHT_BRACE
+                         + COLON + SPACE
+                         + DRM_LDIF_REWRAP_MESSAGE
+                         + mPublicKeySize
+                         + DRM_LDIF_RSA_MESSAGE
+                         + mSourcePKISecurityDatabasePwdfileMessage
+                         + SPACE
+                         + PLUS + SPACE
+                         + DRM_LDIF_REMOVED_ID_OFFSET_MESSAGE
+                         + SPACE
+                         + TIC
+                         + mRemoveIdOffset.toString()
+                         + TIC
+                         + mDrmNamingContextMessage
+                         + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                    // Unformat the data
+                    unformatted_data = stripEOL( data );
+
+                    // Format the unformatted_data
+                    // to match the desired LDIF format
+                    output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                           + SPACE
+                           + format_ldif_data(
+                                 EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                 unformatted_data );
+                } else if( mRewrapFlag ) {
+                    data = input
+                         + SPACE
+                         + LEFT_BRACE
+                         + mDateOfModify
+                         + RIGHT_BRACE
+                         + COLON + SPACE
+                         + DRM_LDIF_REWRAP_MESSAGE
+                         + mPublicKeySize
+                         + DRM_LDIF_RSA_MESSAGE
+                         + mSourcePKISecurityDatabasePwdfileMessage
+                         + mDrmNamingContextMessage
+                         + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                    // Unformat the data
+                    unformatted_data = stripEOL( data );
+
+                    // Format the unformatted_data
+                    // to match the desired LDIF format
+                    output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                           + SPACE
+                           + format_ldif_data(
+                                 EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                 unformatted_data );
+                } else if( mAppendIdOffsetFlag ) {
+                    data = input
+                         + SPACE
+                         + LEFT_BRACE
+                         + mDateOfModify
+                         + RIGHT_BRACE
+                         + COLON + SPACE
+                         + DRM_LDIF_APPENDED_ID_OFFSET_MESSAGE
+                         + SPACE
+                         + TIC
+                         + mAppendIdOffset.toString()
+                         + TIC
+                         + mDrmNamingContextMessage
+                         + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                    // Unformat the data
+                    unformatted_data = stripEOL( data );
+
+                    // Format the unformatted_data
+                    // to match the desired LDIF format
+                    output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                           + SPACE
+                           + format_ldif_data(
+                                 EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                 unformatted_data );
+                } else if( mRemoveIdOffsetFlag ) {
+                    data = input
+                         + SPACE
+                         + LEFT_BRACE
+                         + mDateOfModify
+                         + RIGHT_BRACE
+                         + COLON + SPACE
+                         + DRM_LDIF_REMOVED_ID_OFFSET_MESSAGE
+                         + SPACE
+                         + TIC
+                         + mRemoveIdOffset.toString()
+                         + TIC
+                         + mDrmNamingContextMessage
+                         + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                    // Unformat the data
+                    unformatted_data = stripEOL( data );
+
+                    // Format the unformatted_data
+                    // to match the desired LDIF format
+                    output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                           + SPACE
+                           + format_ldif_data(
+                                 EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                 unformatted_data );
+                }
+
+                // log this information
+                log( "Changed:"
+                   + NEWLINE
+                   + TIC
+                   + DRM_LDIF_EXTDATA_REQUEST_NOTES
+                   + SPACE
+                   + format_ldif_data(
+                         EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                         input )
+                   + TIC
+                   + NEWLINE
+                   + "--->"
+                   + NEWLINE
+                   + TIC
+                   + output
+                   + TIC
+                   + NEWLINE, false );
+            } else {
+                output = line;
+            }
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_REQUEST_NOTES

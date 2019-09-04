@@ -918,6 +918,13 @@ public class DRMTool
     									   + DRMTOOL_CFG_KEYRECOVERY
     									   + DOT
     									   + "requestId";
+    
+    private static final String
+    DRMTOOL_CFG_KEYRECOVERY_DN = DRMTOOL_CFG_PREFIX
+                          + DOT
+                          + DRMTOOL_CFG_KEYRECOVERY
+                          + DOT
+                          + "dn";
 
 
     // Constants:  Target Certificate Information
@@ -2765,8 +2772,43 @@ public class DRMTool
                     output = line;
                 }
             } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-            	output = line;
-            	System.out.println("dn: Key Recovery");
+            	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_DN ) ) {
+            		// First check for an embedded "cn=<value>"
+                    // name-value pair
+                    if( line.startsWith( DRM_LDIF_DN_EMBEDDED_CN_DATA ) ) {
+                        // At this point, always extract
+                        // the embedded "cn=<value>" name-value pair
+                        // which will ALWAYS be the first
+                        // portion of the "dn: " attribute
+                        embedded_cn_data = line.split( COMMA, 2 );
+
+                        embedded_cn_output = compose_numeric_line(
+                                                 DRM_LDIF_DN_EMBEDDED_CN_DATA,
+                                                 EQUAL_SIGN,
+                                                 embedded_cn_data[0],
+                                                 false );
+
+                        input = embedded_cn_output
+                              + COMMA
+                              + embedded_cn_data[1];
+                    } else {
+                        input = line;
+                    }
+
+                    // Since "-source_drm_naming_context", and
+                    // "-target_drm_naming_context" are OPTIONAL
+                    // parameters, ONLY process this portion of the field
+                    // if both of these options have been selected
+                    if( mDrmNamingContextsFlag ) {
+                        output = input.replace( mSourceDrmNamingContext,
+                                                mTargetDrmNamingContext );
+                    } else {
+                        output = input;
+                    }
+            		
+            	} else {
+            		output = line;
+            	}
             } else if( record_type.equals( DRM_LDIF_RECORD ) ) {
                 // Non-Request / Non-Key Record:
                 //     Pass through the original
@@ -4533,7 +4575,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_REQUEST_NOTES )
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_REQUEST_ID )
-                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID ) ) {
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID )
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) ) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

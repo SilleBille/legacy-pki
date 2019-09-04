@@ -932,6 +932,13 @@ public class DRMTool
                                       + DRMTOOL_CFG_KEYRECOVERY
                                       + DOT
                                       + "dateOfModify";
+    
+    private static final String
+    DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID = DRMTOOL_CFG_PREFIX
+                                          + DOT
+                                          + DRMTOOL_CFG_KEYRECOVERY
+                                          + DOT
+                                          + "extdata.requestId";
 
 
     // Constants:  Target Certificate Information
@@ -2948,8 +2955,14 @@ public class DRMTool
                 output = line;
             }
         } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("extdata-requestid: Key Recovery");
+        	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID ) ) {
+        		output = compose_numeric_line( DRM_LDIF_EXTDATA_REQUEST_ID, 
+        						               SPACE,
+        						               line,
+        						               false );
+        	} else {
+        		output = line;
+        	}
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_REQUEST_ID
@@ -4595,7 +4608,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) 
-                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY)) {
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY)
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID) ) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

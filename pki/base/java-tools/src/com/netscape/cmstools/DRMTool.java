@@ -925,6 +925,13 @@ public class DRMTool
                           + DRMTOOL_CFG_KEYRECOVERY
                           + DOT
                           + "dn";
+    
+    private static final String
+    DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY = DRMTOOL_CFG_PREFIX
+                                      + DOT
+                                      + DRMTOOL_CFG_KEYRECOVERY
+                                      + DOT
+                                      + "dateOfModify";
 
 
     // Constants:  Target Certificate Information
@@ -2549,8 +2556,20 @@ public class DRMTool
                 output = line;
             }
         } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("Date Of Modify: Key Recovery");
+        	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY ) ) {
+        		output = DRM_LDIF_DATE_OF_MODIFY
+                        + SPACE
+                        + mDateOfModify;
+
+                 log( "Changed '"
+                    + line
+                    + "' to '"
+                    + output
+                    + "'."
+                    + NEWLINE, false );
+        	} else {
+        		output = line;
+        	}
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_DATE_OF_MODIFY
@@ -4070,7 +4089,6 @@ public class DRMTool
                 output = line;
             }
         } else if ( record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	System.out.println(drmtoolCfg.get("drmtool.ldif.tpsNetkeyKeyRecoveryRequest.requestId"));
         	if ( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID ) ) {
         		output = compose_numeric_line(DRM_LDIF_REQUEST_ID,
         									  SPACE,
@@ -4576,7 +4594,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_REQUEST_NOTES )
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID )
-                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) ) {
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) 
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY)) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

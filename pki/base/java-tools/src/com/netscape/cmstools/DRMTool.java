@@ -715,6 +715,7 @@ public class DRMTool
     private static final String DRMTOOL_CFG_RECOVERY = "recoveryRequest";
     private static final String DRMTOOL_CFG_TPS_KEY_RECORD = "tpsKeyRecord";
     private static final String DRMTOOL_CFG_KEYGEN = "tpsNetkeyKeygenRequest";
+    private static final String DRMTOOL_CFG_KEYRECOVERY = "tpsNetkeyKeyRecoveryRequest";
 
 
     // Constants:  DRMTOOL Config File (DRM CA Enrollment Request Fields)
@@ -910,6 +911,13 @@ public class DRMTool
                                       + DRMTOOL_CFG_KEYGEN
                                       + DOT
                                       + "requestId";
+    
+    private static final String
+    	DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID = DRMTOOL_CFG_PREFIX
+    									   + DOT
+    									   + DRMTOOL_CFG_KEYRECOVERY
+    									   + DOT
+    									   + "requestId";
 
 
     // Constants:  Target Certificate Information
@@ -954,6 +962,7 @@ public class DRMTool
     private static final String DRM_LDIF_KEYGEN = "netkeyKeygen";
     private static final String DRM_LDIF_RECOVERY = "recovery";
     private static final String DRM_LDIF_TPS_KEY_RECORD = "TPS";
+    private static final String DRM_LDIF_KEYRECOVERY = "netkeyKeyRecovery";
 
 
     // Constants:  DRM LDIF Record Messages
@@ -2423,6 +2432,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("cn: Key Recovery");
         } else if( record_type.equals( DRM_LDIF_RECORD ) ) {
             // Non-Request / Non-Key Record:
             //     Pass through the original
@@ -2529,6 +2541,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("Date Of Modify: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_DATE_OF_MODIFY
@@ -2749,6 +2764,9 @@ public class DRMTool
                 } else {
                     output = line;
                 }
+            } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+            	output = line;
+            	System.out.println("dn: Key Recovery");
             } else if( record_type.equals( DRM_LDIF_RECORD ) ) {
                 // Non-Request / Non-Key Record:
                 //     Pass through the original
@@ -2816,6 +2834,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("extdata-keyrecord: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_KEY_RECORD
@@ -2865,6 +2886,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("extdata-requestid: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_REQUEST_ID
@@ -3401,6 +3425,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("extdata-requestnotes: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_REQUEST_NOTES
@@ -3729,6 +3756,8 @@ public class DRMTool
                     System.out.print( "." );
                 }
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	System.out.println("create-extdata-requestnotes: Key Recovery");
         }
     }
 
@@ -3755,6 +3784,9 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	output = line;
+        	System.out.println("extdata-serialnumber: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_SERIAL_NUMBER
@@ -3995,6 +4027,16 @@ public class DRMTool
             } else {
                 output = line;
             }
+        } else if ( record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
+        	System.out.println(drmtoolCfg.get("drmtool.ldif.tpsNetkeyKeyRecoveryRequest.requestId"));
+        	if ( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID ) ) {
+        		output = compose_numeric_line(DRM_LDIF_REQUEST_ID,
+        									  SPACE,
+        									  line,
+        									  true);
+        	} else {
+        		output = line;
+        	}
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_REQUEST_ID
@@ -4219,7 +4261,8 @@ public class DRMTool
                                       ).trim();
                         if( !record_type.equals( DRM_LDIF_ENROLLMENT ) &&
                             !record_type.equals( DRM_LDIF_KEYGEN )     &&
-                            !record_type.equals( DRM_LDIF_RECOVERY ) ) {
+                            !record_type.equals( DRM_LDIF_RECOVERY )   &&
+                            !record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
                             log( "ERROR:  Unknown LDIF record type='"
                                + record_type
                                + "'!"
@@ -4489,7 +4532,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_KEY_RECORD )
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_REQUEST_ID )
                     ||  name.equals( DRMTOOL_CFG_KEYGEN_EXTDATA_REQUEST_NOTES )
-                    ||  name.equals( DRMTOOL_CFG_KEYGEN_REQUEST_ID ) ) {
+                    ||  name.equals( DRMTOOL_CFG_KEYGEN_REQUEST_ID )
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_REQUEST_ID ) ) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

@@ -946,6 +946,13 @@ public class DRMTool
                           + DRMTOOL_CFG_KEYRECOVERY
                           + DOT
                           + "cn";
+    
+    private static final String
+    DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_NOTES = DRMTOOL_CFG_PREFIX
+                                             + DOT
+                                             + DRMTOOL_CFG_KEYRECOVERY
+                                             + DOT
+                                             + "extdata.requestNotes";
 
 
     // Constants:  Target Certificate Information
@@ -3841,7 +3848,152 @@ public class DRMTool
                 }
             }
         } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	System.out.println("create-extdata-requestnotes: Key Recovery");
+        	if( drmtoolCfg.get( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_NOTES ) ) {
+                if(!previous_line.startsWith( DRM_LDIF_EXTDATA_REQUEST_NOTES)) {
+                    // write out the missing 'extdata-requestnotes' line
+                    if( mRewrapFlag && mAppendIdOffsetFlag ) {
+                        data = LEFT_BRACE
+                             + mDateOfModify
+                             + RIGHT_BRACE
+                             + COLON + SPACE
+                             + DRM_LDIF_REWRAP_MESSAGE
+                             + mPublicKeySize
+                             + DRM_LDIF_RSA_MESSAGE
+                             + mSourcePKISecurityDatabasePwdfileMessage
+                             + SPACE
+                             + PLUS + SPACE
+                             + DRM_LDIF_APPENDED_ID_OFFSET_MESSAGE
+                             + SPACE
+                             + TIC
+                             + mAppendIdOffset.toString()
+                             + TIC
+                             + mDrmNamingContextMessage
+                             + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                        // Unformat the data
+                        unformatted_data = stripEOL( data );
+
+                        // Format the unformatted_data
+                        // to match the desired LDIF format
+                        output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                               + SPACE
+                               + format_ldif_data(
+                                   EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                   unformatted_data );
+                    } else if( mRewrapFlag && mRemoveIdOffsetFlag ) {
+                        data = LEFT_BRACE
+                             + mDateOfModify
+                             + RIGHT_BRACE
+                             + COLON + SPACE
+                             + DRM_LDIF_REWRAP_MESSAGE
+                             + mPublicKeySize
+                             + DRM_LDIF_RSA_MESSAGE
+                             + mSourcePKISecurityDatabasePwdfileMessage
+                             + SPACE
+                             + PLUS + SPACE
+                             + DRM_LDIF_REMOVED_ID_OFFSET_MESSAGE
+                             + SPACE
+                             + TIC
+                             + mRemoveIdOffset.toString()
+                             + TIC
+                             + mDrmNamingContextMessage
+                             + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                        // Unformat the data
+                        unformatted_data = stripEOL( data );
+
+                        // Format the unformatted_data
+                        // to match the desired LDIF format
+                        output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                               + SPACE
+                               + format_ldif_data(
+                                   EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                   unformatted_data );
+                    } else if( mRewrapFlag ) {
+                        data = LEFT_BRACE
+                             + mDateOfModify
+                             + RIGHT_BRACE
+                             + COLON + SPACE
+                             + DRM_LDIF_REWRAP_MESSAGE
+                             + mPublicKeySize
+                             + DRM_LDIF_RSA_MESSAGE
+                             + mSourcePKISecurityDatabasePwdfileMessage
+                             + mDrmNamingContextMessage
+                             + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                        // Unformat the data
+                        unformatted_data = stripEOL( data );
+
+                        // Format the unformatted_data
+                        // to match the desired LDIF format
+                        output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                               + SPACE
+                               + format_ldif_data(
+                                   EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                   unformatted_data );
+                    } else if( mAppendIdOffsetFlag ) {
+                        data = LEFT_BRACE
+                             + mDateOfModify
+                             + RIGHT_BRACE
+                             + COLON + SPACE
+                             + DRM_LDIF_APPENDED_ID_OFFSET_MESSAGE
+                             + SPACE
+                             + TIC
+                             + mAppendIdOffset.toString()
+                             + TIC
+                             + mDrmNamingContextMessage
+                             + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                        // Unformat the data
+                        unformatted_data = stripEOL( data );
+
+                        // Format the unformatted_data
+                        // to match the desired LDIF format
+                        output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                               + SPACE
+                               + format_ldif_data(
+                                   EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                   unformatted_data );
+                    } else if( mRemoveIdOffsetFlag ) {
+                        data = LEFT_BRACE
+                             + mDateOfModify
+                             + RIGHT_BRACE
+                             + COLON + SPACE
+                             + DRM_LDIF_REMOVED_ID_OFFSET_MESSAGE
+                             + SPACE
+                             + TIC
+                             + mRemoveIdOffset.toString()
+                             + TIC
+                             + mDrmNamingContextMessage
+                             + mProcessRequestsAndKeyRecordsOnlyMessage;
+
+                        // Unformat the data
+                        unformatted_data = stripEOL( data );
+
+                        // Format the unformatted_data
+                        // to match the desired LDIF format
+                        output = DRM_LDIF_EXTDATA_REQUEST_NOTES
+                               + SPACE
+                               + format_ldif_data(
+                                   EXTDATA_REQUEST_NOTES_FIRST_LINE_DATA_LENGTH,
+                                   unformatted_data );
+                    }
+
+                    // log this information
+                    log( "Created:"
+                       + NEWLINE
+                       + TIC
+                       + output
+                       + TIC
+                       + NEWLINE, false );
+
+                    // Write out this revised line
+                    // and flush the buffer
+                    writer.write( output + NEWLINE );
+                    writer.flush();
+                    System.out.print( "." );
+                }
+            }
         }
     }
 
@@ -4617,7 +4769,8 @@ public class DRMTool
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DN ) 
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_DATE_OF_MODIFY)
                     ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_ID)
-                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_CN) ) {
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_CN)
+                    ||  name.equals( DRMTOOL_CFG_KEYRECOVERY_EXTDATA_REQUEST_NOTES) ) {
                         drmtoolCfg.put( name, value );
                         System.out.print( "." );
                     }

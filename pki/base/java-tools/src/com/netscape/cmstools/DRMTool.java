@@ -2915,9 +2915,6 @@ public class DRMTool
             } else {
                 output = line;
             }
-        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("extdata-keyrecord: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_KEY_RECORD
@@ -3871,9 +3868,6 @@ public class DRMTool
             } else {
                 output = line;
             }
-        } else if (record_type.equals( DRM_LDIF_KEYRECOVERY ) ) {
-        	output = line;
-        	System.out.println("extdata-serialnumber: Key Recovery");
         } else {
             log( "ERROR:  Mismatched record field='"
                + DRM_LDIF_EXTDATA_SERIAL_NUMBER
